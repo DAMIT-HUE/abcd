@@ -8,19 +8,21 @@ password = "1"
 value_of_pass = "0"
 value_of_name = "0"
 current_bitcoin = 0
-bitcoin = 0
 current_money = 10000
-print(current_money)
+bitcoin_price = 26849
+new_bitcoin_price = 0
+percentage_change = 0
 
 # converts the value amount to bitcoin
 # error not saving bitcoin value to current_bitcoin
 def bit_conv(amount):
-    current_bitcoin = amount / 26849
+    global current_bitcoin
+    current_bitcoin = amount / bitcoin_price
     print(current_bitcoin)
 
 #converts bitcoin to money, feature still not added just ignore
 def money_conv():
-    current_money = current_bitcoin * 26849
+    current_money = current_bitcoin * bitcoin_price
 
 
 # function to make output display in style
@@ -38,6 +40,7 @@ def sprint2(str):
 
 # creates new account if values in password.txt and username.txt are empty
 def newAccount():
+	sprint("Welcome to get rich with bitcoin trading app!")
 	sprint("Create your new bitcoin account")
 	sprint2("Input your new name: ")
 	username = input()
@@ -51,7 +54,7 @@ def newAccount():
 # checks if user has enough money to buy bitcoin and call bit_conv with amount_to_buy
 def buy():
     global current_money
-    sprint2(f" you have {current_money} in your account how much do you want to buy?(write value in dollar): ")
+    sprint2(f" you have {current_money} in your account, bitcoin is worth {bitcoin_price}  how much do you want to buy?(write value in dollar): ")
     amount_to_buy = int(input())
     if amount_to_buy > current_money:
         sprint("You dont have enough money in your account")
@@ -62,12 +65,20 @@ def buy():
 
 
 def sell():# still not added
-	print("2")
-	time.sleep(3)
+	global new_bitcoin_price
+	global bitcoin_price
+	global current_bitcoin
+	global percentage_change
 
-def view_bit():#error current bitcoin variable isnt getting updated
+	percentage_change = random.randint(-30,60) / 100
+	new_bitcoin_price = percentage_change * bitcoin_price
+	new_bitcoin_price = round(new_bitcoin_price, 2)
+	bitcoin_price = bitcoin_price + new_bitcoin_price
+	print(new_bitcoin_price)
+	print(bitcoin_price)
+	
+def view_acc():#error current bitcoin variable isnt getting updated
 	sprint(f"You have ${current_money} and {current_bitcoin} bitcoin")
-	print("3")
 	time.sleep(3)
 
 
@@ -93,12 +104,14 @@ else:
 	quit()
 
 while True:# handles input
-	sprint("What do you want to do buy, sell, view deposited bitcoin")
+	sprint("What do you want to do buy, sell, view account or quit app")
 	sprint2("Enter action: ")
 	action = input()
 	if  action.lower() == "buy":
 		buy()
 	if  action.lower() == "sell":
 		sell()
-	if  action.lower() == "view deposited bitcoin":
-		view_bit()s
+	if  action.lower() == "view account":
+		view_acc()
+	# if action.lower() == "quit app" or "q":
+	# 	quit()
