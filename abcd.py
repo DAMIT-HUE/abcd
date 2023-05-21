@@ -18,11 +18,13 @@ percentage_change = 0
 def bit_conv(amount):
     global current_bitcoin
     current_bitcoin = amount / bitcoin_price
+    current_bitcoin = round(current_bitcoin , 2)
     print(current_bitcoin)
 
 #converts bitcoin to money, feature still not added just ignore
 def money_conv():
-    current_money = current_bitcoin * bitcoin_price
+    # current_money = 
+	print("1")
 
 
 # function to make output display in style
@@ -40,16 +42,18 @@ def sprint2(str):
 
 # creates new account if values in password.txt and username.txt are empty
 def newAccount():
+	global username
+	global password
 	sprint("Welcome to get rich with bitcoin trading app!")
 	sprint("Create your new bitcoin account")
 	sprint2("Input your new name: ")
 	username = input()
-	with open('username.txt','w') as file:
+	with open("username.txt",'w') as file:
 		file.write(str(username))
 	sprint2("Input your new password: ")
 	password = input()
-	with open('password.txt','w') as file:
-		file.write(str(password))
+	with open("password.txt",'w') as file:
+			file.write(str(password))
 
 # checks if user has enough money to buy bitcoin and call bit_conv with amount_to_buy
 def buy():
@@ -64,32 +68,62 @@ def buy():
     bit_conv(amount_to_buy)
 
 
-def sell():# still not added
+def gen_new_price():
 	global new_bitcoin_price
 	global bitcoin_price
 	global current_bitcoin
 	global percentage_change
 
 	percentage_change = random.randint(-30,60) / 100
+	while percentage_change == 0:
+		percentage_change = percentage_change = random.randint(-30,60) / 100
 	new_bitcoin_price = percentage_change * bitcoin_price
 	new_bitcoin_price = round(new_bitcoin_price, 2)
 	bitcoin_price = bitcoin_price + new_bitcoin_price
 	print(new_bitcoin_price)
 	print(bitcoin_price)
+
+def sell():# still not added
+	gen_new_price()
+	if percentage_change <= 0:
+		sprint2(f"bitcoin is {percentage_change}% down, its price is {bitcoin_price}, do you want to sell? (y/n) ")
+	if percentage_change >= 0:
+		sprint2(f"bitcoin is {percentage_change}% up, its price is {bitcoin_price}, do you want to sell? (y/n) ")
+	sell_choice = input()
+	if sell_choice.lower() == "y":
+		sprint2(f"You currently have {current_bitcoin} how much do you want to sell? ")
+		sell_amount = int(input())
+		if sell_amount > current_bitcoin:
+			sprint("You dont have enough bitcoin")
+			return
+		if sell_amount <= current_bitcoin:
+			money_conv(sell_amount)
+		else:
+			sprint("non viable input, lease write numbers")
+	if sell_choice.lower() == "n":
+		return
+	else:
+		sprint2("Non viable input")
 	
 def view_acc():#error current bitcoin variable isnt getting updated
 	sprint(f"You have ${current_money} and {current_bitcoin} bitcoin")
 	time.sleep(3)
 
+try:
+	with open('password.txt', 'r') as file: # these 2 commands handle user logins
+		value_of_pass = file.read()
 
-if value_of_pass == "" and value_of_name == "":# checks if this is first time for user to open account and if so calls newAccount()
+	with open('username.txt', 'r') as file:
+		value_of_name = file.read()
+
+except FileNotFoundError:
 	newAccount()
-	
-with open('password.txt', 'r') as file: # these 2 commands handle user logins
-    value_of_pass = file.read()
 
-with open('username.txt', 'r') as file:
-    value_of_name = file.read()
+# if value_of_pass == "0" and value_of_name == "0":# checks if this is first time for user to open account and if so calls newAccount()
+# 	newAccount()
+
+
+
 
 sprint2("Welcome back, enter your username: ")
 entered_username = input()
