@@ -82,14 +82,14 @@ def view_acc():#error current bitcoin variable isnt getting updated
 	time.sleep(3)
 
 
+if value_of_pass == "" and value_of_name == "":# checks if this is first time for user to open account and if so calls newAccount()
+	newAccount()
+	
 with open('password.txt', 'r') as file: # these 2 commands handle user logins
     value_of_pass = file.read()
 
 with open('username.txt', 'r') as file:
     value_of_name = file.read()
-
-if value_of_pass == "" and value_of_name == "":# checks if this is first time for user to open account and if so calls newAccount()
-	newAccount()
 
 sprint2("Welcome back, enter your username: ")
 entered_username = input()
