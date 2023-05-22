@@ -12,11 +12,6 @@ percentage_change = 0
 percentage_change_display = 0
 left_over = 0
 
-with open('money.txt', 'r') as file: 
-	current_money = int(file.read())
-with open('bitcoin.txt', 'r') as file: 
-	current_bitcoin = int(file.read())
-
 #Saves amount of money and bitcoin of the user
 # converts the value amount to bitcoin
 # error not saving bitcoin value to current_bitcoin
@@ -33,7 +28,7 @@ def money_conv(sell_amount):
 	global current_money
 	global current_bitcoin
 
-	current_money = sell_amount * bitcoin_price
+	current_money = sell_amount * bitcoin_price + current_money
 	current_bitcoin = current_bitcoin - sell_amount
 
 	print(current_money)
@@ -71,9 +66,17 @@ def newAccount():
 	with open("password.txt",'w') as file:
 			file.write(str(password))
 	with open('money.txt', 'w') as file:
-		file.write(current_money)
+		file.write(str(current_money))
 	with open('bitcoin.txt', 'w') as file:
-		file.write(current_bitcoin)
+		file.write(str(current_bitcoin))
+
+try:
+	with open('money.txt', 'r') as file: 
+		current_money = float(file.read())
+	with open('bitcoin.txt', 'r') as file: 
+		current_bitcoin = float(file.read())
+except FileNotFoundError:
+	newAccount()
 
 # checks if user has enough money to buy bitcoin and call bit_conv with amount_to_buy
 def buy():
@@ -125,8 +128,6 @@ def sell():# still not added
 			sprint("non viable input, please write numbers")
 	if sell_choice.lower() == "n":
 		return
-	else:
-		sprint2("Non viable input")
 	
 def view_acc():#error current bitcoin variable isnt getting updated
 	sprint(f"You have ${current_money} and {current_bitcoin} bitcoin")
@@ -170,7 +171,9 @@ while True:# handles input
 		sell()
 	if  action.lower() == "view account":
 		view_acc()
+	if action.lower() == "quit":
+		quit()
 	with open('money.txt', 'w') as file: 
-		file.write(current_money)
+		file.write(str(current_money))
 	with open('bitcoin.txt', 'w') as file: 
-		file.write(current_bitcoin)
+		file.write(str(current_bitcoin))
