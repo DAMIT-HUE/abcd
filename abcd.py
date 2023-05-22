@@ -1,4 +1,3 @@
-import os
 import sys,time
 import random
 
@@ -7,25 +6,36 @@ username = "1"
 password = "1"
 value_of_pass = "0"
 value_of_name = "0"
-current_bitcoin = 0
-current_money = 10000
 bitcoin_price = 26849
 new_bitcoin_price = 0
 percentage_change = 0
+percentage_change_display = 0
+left_over = 0
 
+#Saves amount of money and bitcoin of the user
+with open('money.txt', 'w') as file: 
+	current_money = file.read()
+with open('bitcoin.txt', 'w') as file: 
+	current_bitcoin = file.read()
 # converts the value amount to bitcoin
 # error not saving bitcoin value to current_bitcoin
 def bit_conv(amount):
     global current_bitcoin
-    current_bitcoin = amount / bitcoin_price
+    global left_over
+    
+    left_over = current_bitcoin
+    current_bitcoin = amount / bitcoin_price + left_over
     current_bitcoin = round(current_bitcoin , 2)
     print(current_bitcoin)
 
-#converts bitcoin to money, feature still not added just ignore
-def money_conv():
-    # current_money = 
-	print("1")
+def money_conv(sell_amount):
+	global current_money
+	global current_bitcoin
 
+	current_money = sell_amount * bitcoin_price
+	current_bitcoin = current_bitcoin - sell_amount
+
+	print(current_money)
 
 # function to make output display in style
 def sprint(str):
@@ -44,6 +54,11 @@ def sprint2(str):
 def newAccount():
 	global username
 	global password
+	global current_money
+	global current_bitcoin
+
+	current_bitcoin = 0
+	current_money = 10000
 	sprint("Welcome to get rich with bitcoin trading app!")
 	sprint("Create your new bitcoin account")
 	sprint2("Input your new name: ")
@@ -57,14 +72,15 @@ def newAccount():
 
 # checks if user has enough money to buy bitcoin and call bit_conv with amount_to_buy
 def buy():
+    gen_new_price()
     global current_money
-    sprint2(f" you have {current_money} in your account, bitcoin is worth {bitcoin_price}  how much do you want to buy?(write value in dollar): ")
+    sprint2(f"you have {current_money} in your account, bitcoin is worth {bitcoin_price}  how much do you want to buy?(write value in dollar): ")
     amount_to_buy = int(input())
     if amount_to_buy > current_money:
         sprint("You dont have enough money in your account")
         return
     current_money = current_money - amount_to_buy
-    sprint(f"You have {current_money} left")
+    sprint(f"You have {current_money} dollars left")
     bit_conv(amount_to_buy)
 
 
@@ -73,6 +89,7 @@ def gen_new_price():
 	global bitcoin_price
 	global current_bitcoin
 	global percentage_change
+	global percentage_change_display
 
 	percentage_change = random.randint(-30,60) / 100
 	while percentage_change == 0:
@@ -80,8 +97,9 @@ def gen_new_price():
 	new_bitcoin_price = percentage_change * bitcoin_price
 	new_bitcoin_price = round(new_bitcoin_price, 2)
 	bitcoin_price = bitcoin_price + new_bitcoin_price
-	print(new_bitcoin_price)
-	print(bitcoin_price)
+	percentage_change_display = percentage_change * 100
+	# print(new_bitcoin_price)
+	# print(bitcoin_price)
 
 def sell():# still not added
 	gen_new_price()
@@ -92,14 +110,14 @@ def sell():# still not added
 	sell_choice = input()
 	if sell_choice.lower() == "y":
 		sprint2(f"You currently have {current_bitcoin} how much do you want to sell? ")
-		sell_amount = int(input())
+		sell_amount = float(input())
 		if sell_amount > current_bitcoin:
 			sprint("You dont have enough bitcoin")
 			return
 		if sell_amount <= current_bitcoin:
 			money_conv(sell_amount)
 		else:
-			sprint("non viable input, lease write numbers")
+			sprint("non viable input, please write numbers")
 	if sell_choice.lower() == "n":
 		return
 	else:
@@ -147,5 +165,7 @@ while True:# handles input
 		sell()
 	if  action.lower() == "view account":
 		view_acc()
-	# if action.lower() == "quit app" or "q":
-	# 	quit()
+	with open('money.txt', 'w') as file:
+		current_money = int(file.read())
+	with open('bitcoin.txt', 'w') as file:
+		current_bitcoin = int(file.read())
