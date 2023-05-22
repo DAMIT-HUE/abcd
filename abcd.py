@@ -12,11 +12,12 @@ percentage_change = 0
 percentage_change_display = 0
 left_over = 0
 
+with open('money.txt', 'r') as file: 
+	current_money = int(file.read())
+with open('bitcoin.txt', 'r') as file: 
+	current_bitcoin = int(file.read())
+
 #Saves amount of money and bitcoin of the user
-with open('money.txt', 'w') as file: 
-	current_money = file.read()
-with open('bitcoin.txt', 'w') as file: 
-	current_bitcoin = file.read()
 # converts the value amount to bitcoin
 # error not saving bitcoin value to current_bitcoin
 def bit_conv(amount):
@@ -69,6 +70,10 @@ def newAccount():
 	password = input()
 	with open("password.txt",'w') as file:
 			file.write(str(password))
+	with open('money.txt', 'w') as file:
+		file.write(current_money)
+	with open('bitcoin.txt', 'w') as file:
+		file.write(current_bitcoin)
 
 # checks if user has enough money to buy bitcoin and call bit_conv with amount_to_buy
 def buy():
@@ -165,7 +170,7 @@ while True:# handles input
 		sell()
 	if  action.lower() == "view account":
 		view_acc()
-	with open('money.txt', 'w') as file:
-		current_money = int(file.read())
-	with open('bitcoin.txt', 'w') as file:
-		current_bitcoin = int(file.read())
+	with open('money.txt', 'w') as file: 
+		file.write(current_money)
+	with open('bitcoin.txt', 'w') as file: 
+		file.write(current_bitcoin)
