@@ -11,6 +11,7 @@ new_bitcoin_price = 0
 percentage_change = 0
 percentage_change_display = 0
 left_over = 0
+tries = 0
 
 #Saves amount of money and bitcoin of the user
 # converts the value amount to bitcoin
@@ -29,6 +30,7 @@ def money_conv(sell_amount):
 	global current_bitcoin
 
 	current_money = sell_amount * bitcoin_price + current_money
+	current_money = round(current_money, 0)
 	current_bitcoin = current_bitcoin - sell_amount
 
 	print(current_money)
@@ -57,7 +59,7 @@ def newAccount():
 	current_money = 10000
 	sprint("Welcome to get rich with bitcoin trading app!")
 	sprint("Create your new bitcoin account")
-	sprint2("Input your new name: ")
+	sprint2("Input your new username: ")
 	username = input()
 	with open("username.txt",'w') as file:
 		file.write(str(username))
@@ -82,12 +84,13 @@ except FileNotFoundError:
 def buy():
     gen_new_price()
     global current_money
-    sprint2(f"you have {current_money} in your account, bitcoin is worth {bitcoin_price}  how much do you want to buy?(write value in dollar): ")
+    sprint2(f"you have {current_money} in your account, bitcoin is worth {round(bitcoin_price, 2)}  how much do you want to buy?(write value in dollar): ")
     amount_to_buy = int(input())
     if amount_to_buy > current_money:
         sprint("You dont have enough money in your account")
         return
     current_money = current_money - amount_to_buy
+    current_money = round(current_money, 0)
     sprint(f"You have {current_money} dollars left")
     bit_conv(amount_to_buy)
 
@@ -131,7 +134,6 @@ def sell():# still not added
 	
 def view_acc():#error current bitcoin variable isnt getting updated
 	sprint(f"You have ${current_money} and {current_bitcoin} bitcoin")
-	time.sleep(3)
 
 try:
 	with open('password.txt', 'r') as file: # these 2 commands handle user logins
@@ -149,17 +151,27 @@ except FileNotFoundError:
 
 
 
-sprint2("Welcome back, enter your username: ")
-entered_username = input()
 
-sprint2("Welcome back, enter your password: ")
-entered_password = input()
 
-if entered_password == value_of_pass and entered_username == value_of_name:# checks for correct user and password
-	sprint(f"Welcome back {value_of_name}")
-else:
-	sprint("Wrong pass or name")
-	quit()
+for i in range(3):
+	sprint2("Enter your username: ")
+	entered_username = input()
+	sprint2("Enter your password: ")
+	entered_password = input()
+	tries = tries + 1
+	if entered_password == value_of_pass and entered_username == value_of_name:# checks for correct user and password
+		sprint(f"Welcome back {value_of_name}")
+		break
+	else:
+		if tries == 3:
+			sprint("Too many incorrect password or username")
+			quit()
+		else:
+			sprint("Wrong password try again")
+		
+		
+
+
 
 while True:# handles input
 	sprint("What do you want to do buy, sell, view account or quit app")
