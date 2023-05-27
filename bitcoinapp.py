@@ -16,24 +16,6 @@ tries = 0
 #Saves amount of money and bitcoin of the user
 # converts the value amount to bitcoin
 # error not saving bitcoin value to current_bitcoin
-def bit_conv(amount):
-    global current_bitcoin
-    global left_over
-    
-    left_over = current_bitcoin
-    current_bitcoin = amount / bitcoin_price + left_over
-    current_bitcoin = round(current_bitcoin , 2)
-    print(current_bitcoin)
-
-def money_conv(sell_amount):
-	global current_money
-	global current_bitcoin
-
-	current_money = sell_amount * bitcoin_price + current_money
-	current_money = round(current_money, 0)
-	current_bitcoin = current_bitcoin - sell_amount
-
-	print(current_money)
 
 # function to make output display in style
 def sprint(str):
@@ -48,6 +30,27 @@ def sprint2(str):
      sys.stdout.flush()
      time.sleep(3./90)
 
+def bit_conv(amount):
+    global current_bitcoin
+    global left_over
+    
+    left_over = current_bitcoin
+    current_bitcoin = amount / bitcoin_price + left_over
+    current_bitcoin = round(current_bitcoin , 2)
+    sprint(f"you currently have $ {current_bitcoin}")
+    time.sleep(0.5)
+
+def money_conv(sell_amount):
+	global current_money
+	global current_bitcoin
+
+	current_money = sell_amount * bitcoin_price + current_money
+	current_money = round(current_money, 0)
+	current_bitcoin = current_bitcoin - sell_amount
+
+	sprint(f"you currently have $ {current_money}")
+	time.sleep(0.5)
+
 # creates new account if values in password.txt and username.txt are empty
 def newAccount():
 	global username
@@ -58,13 +61,16 @@ def newAccount():
 	current_bitcoin = 0
 	current_money = 10000
 	sprint("Welcome to get rich with bitcoin trading app!")
+	time.sleep(0.5)
 	sprint("Create your new bitcoin account")
 	sprint2("Input your new username: ")
 	username = input()
 	with open("username.txt",'w') as file:
 		file.write(str(username))
+	time.sleep(0.5)
 	sprint2("Input your new password: ")
 	password = input()
+	time.sleep(0.5)
 	with open("password.txt",'w') as file:
 			file.write(str(password))
 	with open('money.txt', 'w') as file:
@@ -84,15 +90,21 @@ except FileNotFoundError:
 def buy():
     gen_new_price()
     global current_money
-    sprint2(f"you have {current_money} in your account, bitcoin is worth {round(bitcoin_price, 2)}  how much do you want to buy?(write value in dollar): ")
-    amount_to_buy = int(input())
-    if amount_to_buy > current_money:
-        sprint("You dont have enough money in your account")
+    sprint2(f"you have {current_money} in your account, bitcoin is worth {round(bitcoin_price, 2)}  are you sure you want to buy?: (y/n) ")
+    buychoice = input()
+    if buychoice.lower() != "y":
         return
-    current_money = current_money - amount_to_buy
-    current_money = round(current_money, 0)
-    sprint(f"You have {current_money} dollars left")
-    bit_conv(amount_to_buy)
+    else:
+        amount_to_buy = int(input())
+        if amount_to_buy > current_money:
+            sprint("You dont have enough money in your account")
+            return
+        current_money = current_money - amount_to_buy
+        current_money = round(current_money, 0)
+        sprint(f"You have {current_money} dollars left")
+        bit_conv(amount_to_buy)
+	    
+    
 
 
 def gen_new_price():
@@ -129,7 +141,7 @@ def sell():# still not added
 			money_conv(sell_amount)
 		else:
 			sprint("non viable input, please write numbers")
-	if sell_choice.lower() == "n":
+	if sell_choice.lower() != "y":
 		return
 	
 def view_acc():#error current bitcoin variable isnt getting updated
@@ -156,6 +168,7 @@ except FileNotFoundError:
 for i in range(3):
 	sprint2("Enter your username: ")
 	entered_username = input()
+	time.sleep(0.5)
 	sprint2("Enter your password: ")
 	entered_password = input()
 	tries = tries + 1
